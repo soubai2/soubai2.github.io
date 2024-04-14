@@ -1,0 +1,642 @@
+
+
+<!DOCTYPE html>
+<html lang="en" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Soubai">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="我只写一下retrofit基本模板，此处只写GET和POST相关 没看过Retrofit2 实战（一、使用详解篇） - 掘金 (juejin.cn)的要去看一下 retrofit发送请求需要四块代码 第一块 你的API抽象接口（建议写一个单独的Java文件里）1234567891011121314151617181920212223242526272829public interface API">
+<meta property="og:type" content="article">
+<meta property="og:title" content="retrofit基本模板">
+<meta property="og:url" content="http://example.com/2024/04/14/retrofit%E5%9F%BA%E6%9C%AC%E6%A8%A1%E6%9D%BF/index.html">
+<meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="我只写一下retrofit基本模板，此处只写GET和POST相关 没看过Retrofit2 实战（一、使用详解篇） - 掘金 (juejin.cn)的要去看一下 retrofit发送请求需要四块代码 第一块 你的API抽象接口（建议写一个单独的Java文件里）1234567891011121314151617181920212223242526272829public interface API">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2024-04-14T06:31:59.000Z">
+<meta property="article:modified_time" content="2024-04-14T06:32:22.511Z">
+<meta property="article:author" content="Soubai">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>retrofit基本模板 - Hexo</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Soubai</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>Home</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>Archives</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>Categories</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>Tags</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>About</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/links/" target="_self">
+                <i class="iconfont icon-link-fill"></i>
+                <span>Links</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="retrofit基本模板"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-04-14 14:31" pubdate>
+          April 14, 2024 pm
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k words
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 mins
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">retrofit基本模板</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>我只写一下retrofit基本模板，此处只写GET和POST相关</p>
+<p>没看过<a target="_blank" rel="noopener" href="https://juejin.cn/post/6978777076073660429">Retrofit2 实战（一、使用详解篇） - 掘金 (juejin.cn)</a>的要去看一下</p>
+<p>retrofit发送请求需要四块代码</p>
+<h6 id="第一块-你的API抽象接口（建议写一个单独的Java文件里）"><a href="#第一块-你的API抽象接口（建议写一个单独的Java文件里）" class="headerlink" title="第一块 你的API抽象接口（建议写一个单独的Java文件里）"></a>第一块 你的API抽象接口（建议写一个单独的Java文件里）</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">API</span> &#123;<br>    <span class="hljs-meta">@GET(&quot;api/user/detail&quot;)</span><span class="hljs-comment">//这里是相应请求的url，会接在第二块代码retrofit实例化填的域名或ip地址后面连成完整地址</span><br>    Call&lt;PersonalDetailData&gt; <span class="hljs-title function_">getPersonalDetail</span><span class="hljs-params">(<span class="hljs-meta">@Header(&quot;Authorization&quot;)</span> String token)</span>;<br>    <span class="hljs-comment">/*上面这行是抽象请求函数，无需自己实例化，retrofit实例化时会自动帮你实例化。</span><br><span class="hljs-comment">    Call&lt;Type&gt;中的Type是自己写的数据类，里面的字段名和类型由后端传输的json数据中的字段决定</span><br><span class="hljs-comment">    getPersonalDetail是抽象函数名称，自己随便起 括号里的@Header(&quot;Authorization&quot;) String token是我带的请求头用于后端身	份验证，具体加不加看后端需求</span><br><span class="hljs-comment">    GET请求一般可通过@Query传递请求参数给后端,可添加多个，比如这样</span><br><span class="hljs-comment">    Call&lt;Type&gt; getGETNAME(@Query(&quot;name1&quot;) String Name1,@Query(&quot;name2&quot;) String Name2)</span><br><span class="hljs-comment">    也可以没有参数设置Call&lt;Type&gt; getGETNAME()</span><br><span class="hljs-comment">   */</span><br>    <span class="hljs-meta">@FormUrlEncoded</span><br>    <span class="hljs-meta">@POST(&quot;api/login&quot;)</span><span class="hljs-comment">//这里是相应请求的url,会接在第二块代码retrofit实例化填的域名或ip地址后面连成完整地址</span><br>    Call&lt;LoginData&gt; <span class="hljs-title function_">getLoginData</span><span class="hljs-params">(<span class="hljs-meta">@Field(&quot;stuid&quot;)</span> String UserID, <span class="hljs-meta">@Field(&quot;password&quot;)</span> String Password)</span>;<br>    <span class="hljs-comment">/*</span><br><span class="hljs-comment">    POST的其他大部分和GET一样，但是如果通过表单传递数据给后端需要在@POST前面一行加上@FormUrlEncoded</span><br><span class="hljs-comment">    @Query也改成@Field</span><br><span class="hljs-comment">    Call&lt;Type&gt; postPOSTNAME(@Field(&quot;name1&quot;) String Name1,@Field(&quot;name2&quot;) String Name2)</span><br><span class="hljs-comment">    也可以没有参数设置</span><br><span class="hljs-comment">    Call&lt;Type&gt; postPOSTNAME()</span><br><span class="hljs-comment">    */</span><br>    <span class="hljs-comment">//下面的是传递文件时的函数写法，目前还没试过行不行就先不写了。</span><br>    <span class="hljs-meta">@Multipart</span><br>    <span class="hljs-meta">@POST(&quot;api/image&quot;)</span><span class="hljs-comment">//这里是相应请求的url</span><br>    Call&lt;ImageUrlResponse&gt; <span class="hljs-title function_">uploadImage</span><span class="hljs-params">(</span><br><span class="hljs-params">            <span class="hljs-meta">@Header(&quot;Authorization&quot;)</span> String authorization,</span><br><span class="hljs-params">            <span class="hljs-meta">@Part(&quot;image&quot;)</span> RequestBody image)</span>;<br>    <span class="hljs-meta">@GET(&quot;qiniutoken&quot;)</span><span class="hljs-comment">//这里是相应请求的url</span><br>    Call&lt;QiniuTokenData&gt; <span class="hljs-title function_">getQiniuToken</span><span class="hljs-params">(<span class="hljs-meta">@Header(&quot;Authorization&quot;)</span>String Token)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+
+
+<h6 id="第二块-在Application里实例化retrofit和你的API"><a href="#第二块-在Application里实例化retrofit和你的API" class="headerlink" title="第二块 在Application里实例化retrofit和你的API"></a>第二块 在Application里实例化retrofit和你的API</h6><p>这是一个单独的Java类，需要将类名“MyApplication”在manifest里声明，类名自己取</p>
+<p>这样app启动时会自动调用Application里的onCreate（）函数，执行onCreate里的代码</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;utf-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">manifest</span> <span class="hljs-attr">xmlns:android</span>=<span class="hljs-string">&quot;http://schemas.android.com/apk/res/android&quot;</span></span><br><span class="hljs-tag">    <span class="hljs-attr">xmlns:tools</span>=<span class="hljs-string">&quot;http://schemas.android.com/tools&quot;</span>&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.INTERNET&quot;</span> /&gt;</span><br>    <span class="hljs-tag">&lt;<span class="hljs-name">uses-permission</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.permission.READ_EXTERNAL_STORAGE&quot;</span> /&gt;</span><br><br>    <span class="hljs-tag">&lt;<span class="hljs-name">application</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.MyApplication&quot;</span>//<span class="hljs-attr">位置在这里</span>，<span class="hljs-attr">要在名字前加</span>&quot;<span class="hljs-attr">.</span>&quot;</span><br><span class="hljs-tag">        <span class="hljs-attr">android:allowBackup</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:dataExtractionRules</span>=<span class="hljs-string">&quot;@xml/data_extraction_rules&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:fullBackupContent</span>=<span class="hljs-string">&quot;@xml/backup_rules&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:icon</span>=<span class="hljs-string">&quot;@mipmap/ic_launcher&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:label</span>=<span class="hljs-string">&quot;@string/app_name&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:networkSecurityConfig</span>=<span class="hljs-string">&quot;@xml/network_security_config&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:roundIcon</span>=<span class="hljs-string">&quot;@mipmap/ic_launcher_round&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:supportsRtl</span>=<span class="hljs-string">&quot;true&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">android:theme</span>=<span class="hljs-string">&quot;@style/Theme.CCNU_STATION&quot;</span></span><br><span class="hljs-tag">        <span class="hljs-attr">tools:targetApi</span>=<span class="hljs-string">&quot;31&quot;</span>&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.DetailChange&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.PersonalPage&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span><br><br>        <span class="hljs-tag">&lt;<span class="hljs-name">meta-data</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;com.google.android.actions&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:resource</span>=<span class="hljs-string">&quot;@xml/network_security_config&quot;</span> /&gt;</span><br><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.SchoolDate&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.ChatPage&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.HomePage&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.SetOutLookActivity&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;false&quot;</span> /&gt;</span><br>        <span class="hljs-tag">&lt;<span class="hljs-name">activity</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;.MainActivity&quot;</span></span><br><span class="hljs-tag">            <span class="hljs-attr">android:exported</span>=<span class="hljs-string">&quot;true&quot;</span>&gt;</span><br>            <span class="hljs-tag">&lt;<span class="hljs-name">intent-filter</span>&gt;</span><br>                <span class="hljs-tag">&lt;<span class="hljs-name">action</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.action.MAIN&quot;</span> /&gt;</span><br><br>                <span class="hljs-tag">&lt;<span class="hljs-name">category</span> <span class="hljs-attr">android:name</span>=<span class="hljs-string">&quot;android.intent.category.LAUNCHER&quot;</span> /&gt;</span><br>            <span class="hljs-tag">&lt;/<span class="hljs-name">intent-filter</span>&gt;</span><br>        <span class="hljs-tag">&lt;/<span class="hljs-name">activity</span>&gt;</span><br>    <span class="hljs-tag">&lt;/<span class="hljs-name">application</span>&gt;</span><br><br><span class="hljs-tag">&lt;/<span class="hljs-name">manifest</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+
+
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//此处省略包名和import</span><br><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyApplication</span> <span class="hljs-keyword">extends</span> <span class="hljs-title class_">Application</span> &#123;<br>    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> API api;<span class="hljs-comment">//定义一个api对象，注意，必须是static修饰的，方便外部多次调用</span><br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onCreate</span><span class="hljs-params">()</span><span class="hljs-comment">//把所有app初始化需要的代码放里面</span><br>    &#123;<br>        <span class="hljs-built_in">super</span>.onCreate();<br>        <span class="hljs-type">Retrofit</span> <span class="hljs-variable">retrofit</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Retrofit</span>.Builder()<br>                .baseUrl(<span class="hljs-string">&quot;http://10.131.122.150:8080/&quot;</span>)<span class="hljs-comment">//这个就是后端的服务器ip可以换成域名，末尾必须加上/</span><br>                .addConverterFactory(GsonConverterFactory.create())<br>                .build();<br>        api = retrofit.create(API.class);<span class="hljs-comment">//在这里你的API被实例化了</span><br>    &#125;<br>    <br>    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> API <span class="hljs-title function_">getApi</span><span class="hljs-params">()</span><br>    &#123;<br>        <span class="hljs-comment">//get函数返回实例化的api对象，可供外部调用</span><br>        <span class="hljs-keyword">return</span> api;<br>    &#125;<br>&#125;<br><br></code></pre></td></tr></table></figure>
+
+<h6 id="第三块-你用于接收返回的json数据的数据类（也是单独一个Java文件）"><a href="#第三块-你用于接收返回的json数据的数据类（也是单独一个Java文件）" class="headerlink" title="第三块 你用于接收返回的json数据的数据类（也是单独一个Java文件）"></a>第三块 你用于接收返回的json数据的数据类（也是单独一个Java文件）</h6><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs Java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Data</span><br>&#123;<br>    <span class="hljs-keyword">private</span> String name1;<span class="hljs-comment">//接收数据的字段名字和类型要和json里的字段一样，不然接收不到，具体看后端传的json</span><br>    <span class="hljs-keyword">private</span> <span class="hljs-type">int</span> name2;<br>	<span class="hljs-comment">/*</span><br><span class="hljs-comment">	这里稍微给一个json数据的例子</span><br><span class="hljs-comment">	&#123;</span><br><span class="hljs-comment">	&quot;name1&quot;:value1,</span><br><span class="hljs-comment">	&quot;name2&quot;:value2</span><br><span class="hljs-comment">	&#125;</span><br><span class="hljs-comment">	*/</span><br>    <span class="hljs-comment">//写get函数方便外部获取数据</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">getName1</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> name1;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">getName2</span><span class="hljs-params">()</span> &#123;<br>        <span class="hljs-keyword">return</span> First;<br>    &#125;<br>	<span class="hljs-comment">//写set函数才能让retrofit（或者是Gson，我也不清楚）自动把json数据传入Data的实例化对象</span><br>    <span class="hljs-comment">//这里有一个小注意点，括号里参数名不能和字段名一样，否则好像会传不进去</span><br>    <span class="hljs-comment">//函数名随便写应该没事，最好规范一点</span><br>    <span class="hljs-keyword">public</span> String <span class="hljs-title function_">setName1</span><span class="hljs-params">(String Name1)</span> &#123;<br>        <span class="hljs-keyword">return</span> msg;<br>    &#125;<br><br>    <span class="hljs-keyword">public</span> <span class="hljs-type">int</span> <span class="hljs-title function_">setName2</span><span class="hljs-params">(<span class="hljs-type">int</span> Name2)</span> &#123;<br>        <span class="hljs-keyword">return</span> token;<br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h6 id="第四块-发送请求（你可以写在你需要发送请求的地方，比如按钮的点击事件响应里-这里以POST为例）"><a href="#第四块-发送请求（你可以写在你需要发送请求的地方，比如按钮的点击事件响应里-这里以POST为例）" class="headerlink" title="第四块 发送请求（你可以写在你需要发送请求的地方，比如按钮的点击事件响应里,这里以POST为例）"></a>第四块 发送请求（你可以写在你需要发送请求的地方，比如按钮的点击事件响应里,这里以POST为例）</h6><p>注意一下，这个是异步请求，不按照正常的代码顺序，不要把依赖返回数据的代码放在回调函数外面</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">API</span> <span class="hljs-variable">api</span> <span class="hljs-operator">=</span> MyApplication.getApi();<br>Call&lt;Data&gt; call = api.postPostName(参数<span class="hljs-number">1</span>，参数<span class="hljs-number">2.</span>.....);<span class="hljs-comment">//这个函数名我在上面的API里没写，意思意思得了</span><br>call.enqueue(<span class="hljs-keyword">new</span> <span class="hljs-title class_">Callback</span>&lt;Data&gt;() &#123;<br>                    <span class="hljs-meta">@Override</span><br>    				<span class="hljs-comment">//请求成功的回调函数</span><br>                    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onResponse</span><span class="hljs-params">(Call&lt;Data&gt; call, Response&lt;Data&gt; response)</span> &#123;<br>                        Toast.makeText(MainActivity.<span class="hljs-built_in">this</span>,<span class="hljs-string">&quot;请求成功&quot;</span>,Toast.LENGTH_SHORT).show();<br>                        <span class="hljs-type">Data</span> <span class="hljs-variable">body</span> <span class="hljs-operator">=</span> response.body();<br>                        <span class="hljs-keyword">if</span>(body == <span class="hljs-literal">null</span>) &#123;<br>                            Toast.makeText(MainActivity.<span class="hljs-built_in">this</span>,<span class="hljs-string">&quot;响应体为空&quot;</span>,Toast.LENGTH_SHORT).show();<br>                            <span class="hljs-keyword">return</span>;<br>                        &#125;<br>                        <span class="hljs-comment">/*</span><br><span class="hljs-comment">                        现在body里面就存着返回的数据，如果成功的话</span><br><span class="hljs-comment">                        通过getName1()和getName2()获取</span><br><span class="hljs-comment">                        /*</span><br><span class="hljs-comment">                        这里应该是你自己对数据的处理代码</span><br><span class="hljs-comment">                        */</span><br>                    &#125;<br>                    <span class="hljs-meta">@Override</span><br>    				<span class="hljs-comment">//请求失败的回调函数</span><br>                    <span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">onFailure</span><span class="hljs-params">(Call&lt;Data&gt; call, Throwable t)</span> &#123;<br>                        Toast.makeText(MainActivity.<span class="hljs-built_in">this</span>,<span class="hljs-string">&quot;请求失败&quot;</span>,Toast.LENGTH_SHORT).show();<br>                    &#125;<br><br>                &#125;);<br></code></pre></td></tr></table></figure>
+
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>retrofit基本模板</div>
+      <div>http://example.com/2024/04/14/retrofit基本模板/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>Author</div>
+          <div>Soubai</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>Posted on</div>
+          <div>April 14, 2024</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>Licensed under</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - Attribution">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/04/14/RecyclerView-%E8%AF%A6%E8%A7%A3/" title="RecyclerView 详解">
+                        <span class="hidden-mobile">RecyclerView 详解</span>
+                        <span class="visible-mobile">Next</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>Table of Contents</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">Search</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">Keyword</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">Blog works best with JavaScript enabled</div>
+  </noscript>
+</body>
+</html>
